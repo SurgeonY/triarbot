@@ -14,7 +14,8 @@ import time
 from exchange_apis import exmo_api
 import logging.handlers
 import pathlib
-import yaml
+# import yaml
+from ruamel.yaml import YAML
 from argparse import ArgumentParser
 from exchanges.exmo_exchange import *
 from strategy_runner import StrategyRunner
@@ -35,28 +36,24 @@ handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=2096000, b
 handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(name)s - %(message)s'))
 log.addHandler(handler)
 
-
-# exchange constants - # TODO refactor, extract config to ext store, yaml or whatever
-API_URL = "api.exmo.com"
-API_KEY = "<your key here>"
-API_SECRET = "<your secret here>"
-
-
 arg_parser = ArgumentParser(description="Simple triangular arbitrage trading bot")
-arg_parser.add_argument("-s", "--secrets", dest="secrets_file",
+arg_parser.add_argument("-s", "--secrets", dest="SECRETS_PATH", default="secrets_conf_template.yml",
                         help="path to a config file with api keys and secrets", metavar="FILE")
-arg_parser.add_argument("-c", "--config", dest="config_file", default="config.yml",
+arg_parser.add_argument("-c", "--config", dest="CONFIG_PATH", default="config.yml",
                         help="path to a config file with bot parameters", metavar="FILE")
-args = arg_parser.parse_args()
+
+yaml = YAML(typ='safe')   # default, if not specfied, is 'rt' (round-trip)
 
 
 def run():
     log.info("Starting")
 
-    secrets_path = "path/to/config.yml"  # read from cmd
-    secrets = yaml.safe_load(open(secrets_path))
+    args = arg_parser.parse_args()
 
-    api_instance = exmo_api.ExmoAPI(API_KEY, API_SECRET, API_URL)
+    secrets = yaml.load(open(args.SECRETS_PATH))
+
+    api_instance = exmo_api.ExmoAPI(secrets["exmo"]["API_KEY"], secrets["exmo"]["API_SECRET"],
+                                    secrets["exmo"]["API_URL"])
     global exmo_exchange
     exmo_exchange = ExmoExchange(api_instance, log)  # exchange can be abstract, TODO consider CCXT lib, exctract exchange interface and make pluggable exchanges
 

@@ -1,7 +1,7 @@
 # triarbot runtime
 db/
 logs/
-
+*secrets*.yml
 
 # IntelliJ
 .idea/
