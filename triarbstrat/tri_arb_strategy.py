@@ -24,12 +24,12 @@ TRADING_AMOUNTS = {'USD': Decimal('5.0'), 'EUR': Decimal('5.0'), 'RUB': Decimal(
                    'ETH': Decimal('0.03'), 'LTC': Decimal('0.2'), 'XRP': Decimal('32.0'), 'USDT': Decimal('5.0'),
                    'DASH': Decimal('0.125')}
 ORDER_TYPE = OrderType.MARKET
-PAPER_TRADING = True
+PAPER_TRADING = True  # if true, no orders will be submitted to exchange
 DEPTH = 40  # order book depth for calculating gain with slippage, for market orders
 GAIN_MIN_LIMIT = Decimal('1.0')  # min gain for checking arbitrage round trip
 PNL_MIN_LIMIT = 1.0  # min PnL with slippage for starting arbitrage round trip - $0.50
 TICKERS_TO_SKIP = 30  # count of ticker requests to skip, while polling, saving space in DB for tickers
-POLLING_INTERVAL = 2  # polloing exchange for ticker, in seconds
+POLLING_INTERVAL = 2  # polling exchange for ticker, in seconds
 
 MARKET_DATA_DB = './db/market_data.db'
 TRIARB_DATA_DB = './db/triarb_data.db'
@@ -103,11 +103,19 @@ TD_ORDER_UPDATE = """UPDATE triarb_order
 
 
 class TriangularArbitrageStrategy:
+    """
+        Read about triangular arbitrage:
+            https://corporatefinanceinstitute.com/resources/knowledge/trading-investing/triangular-arbitrage-opportunity/
+            https://www.investopedia.com/terms/t/triangulararbitrage.asp
+            https://en.wikipedia.org/wiki/Triangular_arbitrage
+
+    """
+
     def __init__(self, exchange: ExmoExchange, logger):
         self.exchange = exchange
         self.logger = logger.getChild('tri_arb') if logger else logging.getLogger(__name__)
 
-        # Indicator needed as per quote currency basis, can be started as many as currencies to watch
+        # Indicators needed on per quote currency basis, can be started as many indicators as currencies to watch
         self.indicators = []
         currencies = exchange.get_currencies()
         for quote_curr in QUOTE_CURRS:
