@@ -59,6 +59,10 @@ class ExmoError(Exception):
 
 if __name__ == '__main__':
     # Example
+    api_key = "YOUR_API_KEY"  # Replace with a placeholder or load from config for testing
+    api_secret = "YOUR_API_SECRET"  # Replace with a placeholder or load from config for testing
     ExmoAPI_instance = ExmoAPI(api_key, api_secret)
     response = ExmoAPI_instance.api_query('user_info')
     balances = response['balances']
+    print(f"Balances: {balances}") # Added a print statement to see the output  
+    
