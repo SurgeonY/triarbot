@@ -2,7 +2,7 @@
 """
 triarbot: Simple triangular arbitrage bot
 Python 3+
-(C) 2018 SurgeonY, Planet Earth
+(C) 2018 SurgeonY
 
 Donate ETH: 0xFA745708C435300058278631429cA910AE175d52
 Donate BTC: 16KqCc4zxEWf7CaerWNZdGYwyuU33qDzCv

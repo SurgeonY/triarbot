@@ -2,7 +2,7 @@
 """
 triarbot: Simple triangular arbitrage bot
 Python 3+
-(C) 2018 SurgeonY, Planet Earth
+(C) 2018 SurgeonY
 
 Donate ETH: 0xFA745708C435300058278631429cA910AE175d52
 Donate BTC: 16KqCc4zxEWf7CaerWNZdGYwyuU33qDzCv
@@ -164,7 +164,7 @@ class ExmoExchange:
 
     def get_user_open_orders(self):
         """
-        Getting the list of user’s active orders
+        Getting the list of user's active orders
         :return:
                 {
                   "BTC_USD": [
@@ -257,7 +257,7 @@ class ExmoExchange:
 
     def get_order_book(self, pair: str, limit: int = 100) -> Dict:
         """
-        The book of current orders on the currency pair
+        The book of current open orders on the currency pair
         :param pair: one or various currency pairs separated by commas (example: BTC_USD,BTC_EUR)
         :param limit: the number of displayed positions (default: 100, max: 1000)
         :return:
@@ -307,7 +307,7 @@ class ExmoExchange:
         """
         Currencies list
         :return:
-                ["USD","EUR","RUB","BTC","DOGE","LTC"] 
+                ["USD", "EUR", "RUB", "BTC", "DOGE", "LTC"]
         """
         response = self.exmo_api.api_query('currency')
         self.logger.debug('Currencies received: %s', str(response))

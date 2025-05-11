@@ -14,8 +14,7 @@ import time
 from exchange_apis import exmo_api
 import logging.handlers
 import pathlib
-# import yaml
-from ruamel.yaml import YAML
+import yaml
 from argparse import ArgumentParser
 from exchanges.exmo_exchange import *
 from strategy_runner import StrategyRunner
@@ -42,15 +41,13 @@ arg_parser.add_argument("-s", "--secrets", dest="SECRETS_PATH", default="secrets
 arg_parser.add_argument("-c", "--config", dest="CONFIG_PATH", default="config.yml",
                         help="path to a config file with bot parameters", metavar="FILE")
 
-yaml = YAML(typ='safe')   # default, if not specfied, is 'rt' (round-trip)
-
 
 def run():
     log.info("Starting")
 
     args = arg_parser.parse_args()
 
-    secrets = yaml.load(open(args.SECRETS_PATH))
+    secrets = yaml.safe_load(open(args.SECRETS_PATH))
 
     api_instance = exmo_api.ExmoAPI(secrets["exmo"]["API_KEY"], secrets["exmo"]["API_SECRET"],
                                     secrets["exmo"]["API_URL"])
