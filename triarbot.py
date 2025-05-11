@@ -54,6 +54,8 @@ def run():
     global exmo_exchange
     exmo_exchange = ExmoExchange(api_instance, log)  # exchange can be abstract, TODO consider CCXT lib, exctract exchange interface and make pluggable exchanges
 
+    PAIR = "BTC_USD"  # Define a default trading pair
+
     try:
         while True:
             # TODO remove interactive cmd, make normal cmdline params parsing
@@ -104,8 +106,9 @@ def run():
                 continue
 
             if oper == 3:
-                last_trade = get_last_trade(PAIR)
-                log.info("Last trade: %s", last_trade)
+                ticker = exmo_exchange.get_ticker(PAIR)
+                last_trade_price = ticker.last_trade
+                log.info("Last trade price for %s: %s", PAIR, last_trade_price)
                 continue
 
             if oper == 4:
@@ -165,8 +168,7 @@ def cancel_all_orders():
 
 def get_account_info():
     try:
-        api_instance = exmo_api.ExmoAPI(API_KEY, API_SECRET)
-        response = api_instance.api_query("user_info")
+        response = exmo_exchange.exmo_api.api_query("user_info")
 
         response['server_date'] = from_timestamp(response['server_date'])
         for curr in response['balances']:
@@ -196,8 +198,7 @@ def get_open_orders():
     """
 
     try:
-        api_instance = exmo_api.ExmoAPI(API_KEY, API_SECRET)
-        orders_pairs: Dict = api_instance.api_query("user_open_orders")
+        orders_pairs: Dict = exmo_exchange.exmo_api.api_query("user_open_orders")
 
         result = []
         # orders = orders[pair]
